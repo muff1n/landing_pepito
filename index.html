@@ -40,6 +40,7 @@
   </div>
 
 <script>
+  // ✅ tu URL /exec
   const API_URL = "https://script.google.com/macros/s/AKfycby3BteyfVfqrfmygW1ZjC875COt7ZsZKU2pRwGUzz7IIVr1eE4A-UGFMQOwYCYvM-KO5Q/exec";
 
   const $ = (id) => document.getElementById(id);
@@ -49,19 +50,21 @@
   const $result= $("result");
 
   function paint(data){
-    $("rPlaca").textContent  = data.placa || "-";
-    $("rEstado").textContent = data.estado || "-";
-    $("rCodigo").textContent = data.codigo || "-";
-    $("rEmpresa").textContent= data.empresa || "-";
-    $("rProp").textContent   = data.propietario || "-";
-    $("rCond").textContent   = data.conductor || "-";
-    $("rEstado").style.color = (String(data.estado).toUpperCase() === "VIGENTE") ? "green" : "red";
+    $("rPlaca").textContent   = data.placa || "-";
+    $("rEstado").textContent  = data.estado || "-";
+    $("rCodigo").textContent  = data.codigo || "-";
+    $("rEmpresa").textContent = data.empresa || "-";
+    $("rProp").textContent    = data.propietario || "-";
+    $("rCond").textContent    = data.conductor || "-";
+
+    $("rEstado").style.color =
+      (String(data.estado).toUpperCase() === "VIGENTE") ? "green" : "red";
   }
 
-  // ✅ JSONP helper
+  // ✅ JSONP helper (NO CORS)
   function jsonp(url) {
     return new Promise((resolve, reject) => {
-      const cb = "cb_" + Date.now() + "_" + Math.floor(Math.random()*1000);
+      const cb = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
 
       window[cb] = (data) => {
         resolve(data);
@@ -72,14 +75,17 @@
       script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
       script.onerror = () => { reject(new Error("JSONP failed")); cleanup(); };
 
-      function cleanup(){
+      function cleanup() {
         delete window[cb];
         script.remove();
       }
 
       document.body.appendChild(script);
-      // timeout
-      setTimeout(() => { reject(new Error("Timeout")); cleanup(); }, 15000);
+
+      setTimeout(() => {
+        reject(new Error("Timeout"));
+        cleanup();
+      }, 15000);
     });
   }
 
@@ -94,7 +100,8 @@
     $status.textContent = "Consultando...";
     $result.style.display = "none";
 
-    try{
+    try {
+      // ✅ OJO: aquí ya NO usamos fetch
       const url = `${API_URL}?placa=${encodeURIComponent(placa)}`;
       const json = await jsonp(url);
 
@@ -110,8 +117,9 @@
       $status.textContent = "Encontrado ✅";
       paint(json);
       $result.style.display = "block";
-    }catch(err){
-      $status.textContent = "Error de conexión/JSONP (revisa deploy y permisos).";
+
+    } catch (err) {
+      $status.textContent = "Error de conexión/JSONP (revisa deploy del WebApp).";
       console.error(err);
     }
   }
