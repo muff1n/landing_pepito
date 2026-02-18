@@ -66,25 +66,40 @@
   function jsonp(url) {
     return new Promise((resolve, reject) => {
       const cb = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+      let done = false;
 
       window[cb] = (data) => {
+        if (done) return;
+        done = true;
         resolve(data);
         cleanup();
       };
 
       const script = document.createElement("script");
+      script.async = true;
       script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
-      script.onerror = () => { reject(new Error("JSONP failed")); cleanup(); };
+
+      // 👇 esto te ayuda a ver la URL exacta en consola
+      console.log("JSONP URL =>", script.src);
+
+      script.onerror = () => {
+        if (done) return;
+        done = true;
+        reject(new Error("Script load error (bloqueado/404)"));
+        cleanup();
+      };
 
       function cleanup() {
-        delete window[cb];
-        script.remove();
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
       }
 
       document.body.appendChild(script);
 
       setTimeout(() => {
-        reject(new Error("Timeout"));
+        if (done) return;
+        done = true;
+        reject(new Error("Timeout (no respondió el callback)"));
         cleanup();
       }, 15000);
     });
