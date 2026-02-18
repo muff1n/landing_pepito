@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Consulta Placa</title>
+  <style>
+    body{font-family:system-ui,Arial;max-width:720px;margin:30px auto;padding:0 16px}
+    .card{border:1px solid #e5e5e5;border-radius:12px;padding:16px}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px}
+    button{margin-top:10px;padding:12px 14px;border:0;border-radius:10px;cursor:pointer}
+    .muted{color:#666;font-size:14px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .k{color:#6b7280;font-size:12px;margin:0}
+    .v{margin:0;font-weight:600}
+  </style>
+</head>
+<body>
+  <h2>Consulta Vehicular</h2>
+
+  <div class="card">
+    <label for="placa">Placa</label>
+    <input id="placa" placeholder="Ej: ABC-123" autocomplete="off" />
+    <button id="btn">Consultar</button>
+    <p class="muted">Enter también consulta.</p>
+  </div>
+
+  <h3>Resultado</h3>
+  <div id="status" class="muted">Sin consulta aún.</div>
+
+  <div id="result" class="card" style="display:none;margin-top:10px;">
+    <div class="row">
+      <div><p class="k">PLACA</p><p class="v" id="rPlaca"></p></div>
+      <div><p class="k">ESTADO</p><p class="v" id="rEstado"></p></div>
+      <div><p class="k">CÓDIGO</p><p class="v" id="rCodigo"></p></div>
+      <div><p class="k">EMPRESA</p><p class="v" id="rEmpresa"></p></div>
+      <div><p class="k">PROPIETARIO</p><p class="v" id="rProp"></p></div>
+      <div><p class="k">CONDUCTOR</p><p class="v" id="rCond"></p></div>
+    </div>
+  </div>
+
+<script>
+  // ✅ pega tu URL /exec
+  const API_URL = "PEGAR_AQUI_TU_URL_WEBAPP";
+
+  const $ = (id) => document.getElementById(id);
+  const $placa = $("placa");
+  const $btn   = $("btn");
+  const $status= $("status");
+  const $result= $("result");
+
+  function paint(data){
+    $("rPlaca").textContent  = data.placa || "-";
+    $("rEstado").textContent = data.estado || "-";
+    $("rCodigo").textContent = data.codigo || "-";
+    $("rEmpresa").textContent= data.empresa || "-";
+    $("rProp").textContent   = data.propietario || "-";
+    $("rCond").textContent   = data.conductor || "-";
+
+    // color por estado
+    $("rEstado").style.color = (String(data.estado).toUpperCase() === "VIGENTE") ? "green" : "red";
+  }
+
+  async function consultar(){
+    const placa = $placa.value.trim().toUpperCase();
+    if(!placa){
+      $status.textContent = "Ingresa una placa.";
+      $result.style.display = "none";
+      return;
+    }
+
+    $status.textContent = "Consultando...";
+    $result.style.display = "none";
+
+    try{
+      const url = `${API_URL}?placa=${encodeURIComponent(placa)}&format=json`;
+      const res = await fetch(url);
+      const json = await res.json();
+
+      if(!json.ok){
+        $status.textContent = "Error: " + (json.error || "desconocido");
+        return;
+      }
+      if(!json.found){
+        $status.textContent = `No se encontró la placa ${placa}`;
+        return;
+      }
+
+      $status.textContent = "Encontrado ✅";
+      paint(json);
+      $result.style.display = "block";
+
+    }catch(err){
+      $status.textContent = "Fallo de red / CORS / URL inválida.";
+      console.error(err);
+    }
+  }
+
+  $btn.addEventListener("click", consultar);
+  $placa.addEventListener("keydown", (e)=>{ if(e.key==="Enter") consultar(); });
+</script>
+</body>
+</html>
