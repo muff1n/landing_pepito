@@ -40,14 +40,17 @@
   </div>
 
 <script>
-  // ✅ tu URL /exec
-  const API_URL = "https://script.google.com/macros/s/AKfycby3BteyfVfqrfmygW1ZjC875COt7ZsZKU2pRwGUzz7IIVr1eE4A-UGFMQOwYCYvM-KO5Q/exec";
+  const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrTVoQvH5CCrJyQ6o3LPJ2zb2lGQa9yk32liFWQ3ShlcSHHp7Bm0lc9ITeR8k56Gj5m53vzNfYQW51SBpup9qjeGkBUTDjohjSwgxqNfKSF7nc4XwjIa5c-pXtNc5fUF7IeMgUMXz8cVaYUSuq7vFcY7cVhSE8TZ1cQVx8-eqRTuuOA5V-dFeV29YY6MMgNHaW6tX1PvzlQ4KHbuW4jw2n-h274h549H5LU0uBt-Rg4fWYAD9vxpt0bLXRLjod-zj20HC4dRILOlvnFflQ-WyE2QmKFr45gmhMyX2WyukKYcuddYxFQZIDrEkq1mY-jSNU3NXe54&lib=MsM0wand9q0EJKnJBv5q9O0T4BubEyJ3M";
 
   const $ = (id) => document.getElementById(id);
   const $placa = $("placa");
   const $btn   = $("btn");
   const $status= $("status");
   const $result= $("result");
+
+  function normalizePlaca(s){
+    return String(s).replace(/[^A-Z0-9]/gi, "").toUpperCase();
+  }
 
   function paint(data){
     $("rPlaca").textContent   = data.placa || "-";
@@ -61,7 +64,6 @@
       (String(data.estado).toUpperCase() === "VIGENTE") ? "green" : "red";
   }
 
-  // ✅ JSONP helper (NO CORS)
   function jsonp(url) {
     return new Promise((resolve, reject) => {
       const cb = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
@@ -72,7 +74,7 @@
       };
 
       const script = document.createElement("script");
-      script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+      script.src = url + "&callback=" + cb; // 👈 aquí también usamos &
       script.onerror = () => { reject(new Error("JSONP failed")); cleanup(); };
 
       function cleanup() {
@@ -90,7 +92,8 @@
   }
 
   async function consultar(){
-    const placa = $placa.value.trim().toUpperCase();
+    const placa = normalizePlaca($placa.value.trim());
+
     if(!placa){
       $status.textContent = "Ingresa una placa.";
       $result.style.display = "none";
@@ -101,8 +104,7 @@
     $result.style.display = "none";
 
     try {
-      // ✅ OJO: aquí ya NO usamos fetch
-      const url = `${API_URL}?placa=${encodeURIComponent(placa)}`;
+      const url = `${API_URL}&placa=${encodeURIComponent(placa)}`; // 👈 aquí también &
       const json = await jsonp(url);
 
       if(!json.ok){
@@ -119,8 +121,8 @@
       $result.style.display = "block";
 
     } catch (err) {
-      $status.textContent = "Error de conexión/JSONP (revisa deploy del WebApp).";
-      console.error(err);
+      $status.textContent = "JSONP falló: " + err.message;
+      console.error("JSONP error:", err);
     }
   }
 
