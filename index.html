@@ -1,147 +1,999 @@
 <!doctype html>
 <html lang="es">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Consulta Placa</title>
-  <style>
-    body{font-family:system-ui,Arial;max-width:720px;margin:30px auto;padding:0 16px}
-    .card{border:1px solid #e5e5e5;border-radius:12px;padding:16px}
-    input{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px}
-    button{margin-top:10px;padding:12px 14px;border:0;border-radius:10px;cursor:pointer}
-    .muted{color:#666;font-size:14px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .k{color:#6b7280;font-size:12px;margin:0}
-    .v{margin:0;font-weight:600}
-  </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Consultora Pepito | Transporte & Tecnología</title>
+    <meta name="description"
+        content="Consultora Pepito: Estudios de Impacto Vial, planeamiento y operaciones en transporte. Desarrollo de sistemas, automatizaciones, web apps, apps y bots para atención." />
+
+    <!-- Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: rgba(255, 255, 255, .06);
+            --panel2: rgba(255, 255, 255, .10);
+            --text: #eaf0ff;
+            --muted: rgba(234, 240, 255, .72);
+            --muted2: rgba(234, 240, 255, .55);
+            --border: rgba(255, 255, 255, .14);
+            --primary: #4f8cff;
+            /* azul */
+            --primary2: #6ae4ff;
+            /* cian suave */
+            --accent: #ffb14a;
+            /* naranja suave */
+            --shadow: 0 18px 45px rgba(0, 0, 0, .35);
+            --radius: 18px;
+            --radius2: 26px;
+            --max: 1160px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background:
+                radial-gradient(1200px 600px at 10% 10%, rgba(79, 140, 255, .35), transparent 55%),
+                radial-gradient(900px 520px at 90% 25%, rgba(106, 228, 255, .25), transparent 55%),
+                radial-gradient(900px 520px at 55% 105%, rgba(255, 177, 74, .18), transparent 60%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(var(--max), calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(14px);
+            background: rgba(11, 18, 32, .6);
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .topbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            gap: 14px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            letter-spacing: .2px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background:
+                radial-gradient(14px 14px at 30% 30%, rgba(255, 255, 255, .45), transparent 55%),
+                linear-gradient(135deg, var(--primary), var(--primary2));
+            box-shadow: 0 10px 28px rgba(79, 140, 255, .35);
+            border: 1px solid rgba(255, 255, 255, .18);
+        }
+
+        .brand small {
+            display: block;
+            font-weight: 600;
+            color: var(--muted2);
+            letter-spacing: .3px;
+            margin-top: -3px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 13.5px;
+        }
+
+        nav a {
+            opacity: .86;
+        }
+
+        nav a:hover {
+            opacity: 1;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(255, 255, 255, .06);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 13.5px;
+            transition: transform .15s ease, background .15s ease, border-color .15s ease;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, .10);
+            border-color: rgba(255, 255, 255, .22);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            border-color: rgba(255, 255, 255, .22);
+            box-shadow: 0 16px 40px rgba(79, 140, 255, .25);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a94ff, #79eeff);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 64px 0 30px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 26px;
+            align-items: stretch;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .06);
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 12.5px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 99px;
+            background: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 177, 74, .18);
+        }
+
+        h1 {
+            margin: 14px 0 10px;
+            font-size: clamp(30px, 4vw, 46px);
+            line-height: 1.12;
+            letter-spacing: -0.5px;
+        }
+
+        .lead {
+            color: var(--muted);
+            font-size: 15.5px;
+            margin: 0 0 18px;
+            max-width: 62ch;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .hero-card {
+            border-radius: var(--radius2);
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            box-shadow: var(--shadow);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            background:
+                radial-gradient(300px 200px at 10% 10%, rgba(79, 140, 255, .25), transparent 55%),
+                radial-gradient(300px 200px at 85% 20%, rgba(106, 228, 255, .18), transparent 55%),
+                radial-gradient(280px 200px at 55% 90%, rgba(255, 177, 74, .12), transparent 60%);
+            opacity: .95;
+            pointer-events: none;
+        }
+
+        .hero-card>* {
+            position: relative;
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .kpi {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(0, 0, 0, .18);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .kpi strong {
+            display: block;
+            font-size: 18px;
+        }
+
+        .kpi span {
+            display: block;
+            color: var(--muted2);
+            font-weight: 600;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* Sections */
+        section {
+            padding: 44px 0;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: -.2px;
+        }
+
+        .section-sub {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            max-width: 70ch;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .06);
+            color: var(--muted);
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 14px;
+        }
+
+        .card {
+            grid-column: span 4;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .05);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .20);
+            transition: transform .15s ease, background .15s ease, border-color .15s ease;
+            min-height: 132px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, .07);
+            border-color: rgba(255, 255, 255, .18);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 15.5px;
+            letter-spacing: -.2px;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13.5px;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: linear-gradient(135deg, rgba(79, 140, 255, .25), rgba(106, 228, 255, .12));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .panel {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .05);
+            border-radius: var(--radius2);
+            padding: 18px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, .22);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .step {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(0, 0, 0, .20);
+            border-radius: var(--radius);
+            padding: 16px;
+            min-height: 128px;
+        }
+
+        .step .num {
+            display: inline-flex;
+            width: 34px;
+            height: 34px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 177, 74, .15);
+            border: 1px solid rgba(255, 177, 74, .25);
+            color: var(--text);
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .step h4 {
+            margin: 0 0 6px;
+            font-size: 15px;
+        }
+
+        .step p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13.5px;
+        }
+
+        /* FAQ */
+        details {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .05);
+            border-radius: 16px;
+            padding: 12px 14px;
+        }
+
+        details+details {
+            margin-top: 10px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 800;
+            color: var(--text);
+            outline: none;
+        }
+
+        details p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 13.5px;
+        }
+
+        /* Contact form */
+        form {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 700;
+            font-size: 12.5px;
+            color: var(--muted);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(0, 0, 0, .18);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: rgba(79, 140, 255, .50);
+            box-shadow: 0 0 0 4px rgba(79, 140, 255, .18);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .note {
+            color: var(--muted2);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        footer {
+            padding: 26px 0 36px;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            color: var(--muted2);
+            font-size: 12.5px;
+        }
+
+        /* WhatsApp floating */
+        .wa-float {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 30;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 999px;
+            background: rgba(37, 211, 102, .15);
+            border: 1px solid rgba(37, 211, 102, .35);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .35);
+            backdrop-filter: blur(10px);
+            font-weight: 800;
+        }
+
+        .wa-float:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kpis {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .split {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                grid-column: span 6;
+            }
+
+            nav {
+                display: none;
+            }
+
+            /* simple en mobile */
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                width: calc(100% - 28px);
+            }
+
+            .card {
+                grid-column: span 12;
+            }
+
+            .kpis {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .wa-float span {
+                display: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <h2>Consulta Vehicular</h2>
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <a class="brand" href="#inicio">
+                <div class="logo" aria-hidden="true"></div>
+                <div>
+                    Consultora Pepito
+                    <small>Transporte & Tecnología</small>
+                </div>
+            </a>
 
-  <div class="card">
-    <label for="placa">Placa</label>
-    <input id="placa" placeholder="Ej: ABC-123" autocomplete="off" />
-    <button id="btn">Consultar</button>
-    <p class="muted">Enter también consulta.</p>
-  </div>
+            <nav aria-label="Navegación">
+                <a href="#transportes">Transportes</a>
+                <a href="#tecnologia">Tecnología</a>
+                <a href="#metodo">Cómo trabajamos</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
 
-  <h3>Resultado</h3>
-  <div id="status" class="muted">Sin consulta aún.</div>
+            <div class="actions">
+                <a class="btn" href="#contacto">Cotizar</a>
+                <a class="btn btn-primary" id="btn-agenda" href="#contacto">Agenda una asesoría</a>
+            </div>
+        </div>
+    </header>
 
-  <div id="result" class="card" style="display:none;margin-top:10px;">
-    <div class="row">
-      <div><p class="k">PLACA</p><p class="v" id="rPlaca"></p></div>
-      <div><p class="k">ESTADO</p><p class="v" id="rEstado"></p></div>
-      <div><p class="k">CÓDIGO</p><p class="v" id="rCodigo"></p></div>
-      <div><p class="k">EMPRESA</p><p class="v" id="rEmpresa"></p></div>
-      <div><p class="k">PROPIETARIO</p><p class="v" id="rProp"></p></div>
-      <div><p class="k">CONDUCTOR</p><p class="v" id="rCond"></p></div>
-    </div>
-  </div>
+    <!-- HERO -->
+    <main id="inicio" class="hero">
+        <div class="container hero-grid">
+            <div>
+                <div class="pill"><span class="dot"></span> Soluciones técnicas y digitales para el transporte</div>
+                <h1>Ingeniería de transporte + tecnología aplicada para mejorar la gestión, operación y atención.</h1>
+                <p class="lead">
+                    En <b>Consultora Pepito</b> desarrollamos <b>estudios técnicos</b> (impacto vial, planeamiento y
+                    operaciones)
+                    y también construimos la <b>tecnología</b> que los hace funcionar: sistemas, automatizaciones, web
+                    apps, apps y bots.
+                </p>
 
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycby3BteyfVfqrfmygW1ZjC875COt7ZsZKU2pRwGUzz7IIVr1eE4A-UGFMQOwYCYvM-KO5Q/exec";
-  const $ = (id) => document.getElementById(id);
-  const $placa = $("placa");
-  const $btn   = $("btn");
-  const $status= $("status");
-  const $result= $("result");
+                <div class="hero-cta">
+                    <a class="btn btn-primary" href="#contacto">📞 Agenda una asesoría</a>
+                    <a class="btn" href="#transportes">Ver servicios</a>
+                    <a class="btn" id="btn-whatsapp-top" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+                </div>
 
-  function normalizePlaca(s){
-    return String(s).replace(/[^A-Z0-9]/gi, "").toUpperCase();
-  }
+                <p class="note">Respuesta rápida • Entregables claros • Enfoque en transporte (no genérico)</p>
+            </div>
 
-  function paint(data){
-    $("rPlaca").textContent   = data.placa || "-";
-    $("rEstado").textContent  = data.estado || "-";
-    $("rCodigo").textContent  = data.codigo || "-";
-    $("rEmpresa").textContent = data.empresa || "-";
-    $("rProp").textContent    = data.propietario || "-";
-    $("rCond").textContent    = data.conductor || "-";
+            <aside class="hero-card" aria-label="Resumen de valor">
+                <h3 style="margin:0 0 8px; font-size:16px;">Lo que puedes lograr</h3>
+                <p style="margin:0; color:var(--muted); font-size:13.5px;">
+                    Menos fricción operativa, más control y mejores decisiones con soporte técnico y herramientas
+                    digitales.
+                </p>
 
-    $("rEstado").style.color =
-      (String(data.estado).toUpperCase() === "VIGENTE") ? "green" : "red";
-  }
+                <div class="kpis">
+                    <div class="kpi">
+                        <strong>🚦 Impacto vial</strong>
+                        <span>Diagnóstico + medidas de mitigación</span>
+                    </div>
+                    <div class="kpi">
+                        <strong>🗺️ Planeamiento</strong>
+                        <span>Rutas, paraderos, flujos y mejoras</span>
+                    </div>
+                    <div class="kpi">
+                        <strong>🤖 Automatización</strong>
+                        <span>Procesos repetitivos a un click</span>
+                    </div>
+                    <div class="kpi">
+                        <strong>📱 Apps & Web</strong>
+                        <span>Consulta, control, atención y reporte</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
 
-  function jsonp(url) {
-    return new Promise((resolve, reject) => {
-      const cb = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-      let done = false;
+    <!-- TRANSPORTES -->
+    <section id="transportes">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Servicios — Área de Transportes</h2>
+                    <p class="section-sub">Estudios y soporte técnico para decisiones con base, alineados a la realidad
+                        operativa.</p>
+                </div>
+                <div class="badge">🚦 Transporte</div>
+            </div>
 
-      window[cb] = (data) => {
-        if (done) return;
-        done = true;
-        resolve(data);
-        cleanup();
-      };
+            <div class="grid">
+                <article class="card">
+                    <div class="icon">🚧</div>
+                    <h3>Estudio de Impacto Vial</h3>
+                    <p>Evaluación del efecto de proyectos/obras sobre la red vial y propuestas de mitigación con
+                        sustento técnico.</p>
+                </article>
 
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+                <article class="card">
+                    <div class="icon">🗺️</div>
+                    <h3>Planeamiento del Transporte</h3>
+                    <p>Análisis de demanda, diseño/optimización de rutas y paraderos, propuestas de mejora de
+                        circulación.</p>
+                </article>
 
-      // 👇 esto te ayuda a ver la URL exacta en consola
-      console.log("JSONP URL =>", script.src);
+                <article class="card">
+                    <div class="icon">🚦</div>
+                    <h3>Operaciones en Transporte</h3>
+                    <p>Soporte para operación, control, fiscalización y mejoras operativas con enfoque práctico y
+                        medible.</p>
+                </article>
+            </div>
+        </div>
+    </section>
 
-      script.onerror = () => {
-        if (done) return;
-        done = true;
-        reject(new Error("Script load error (bloqueado/404)"));
-        cleanup();
-      };
+    <!-- TECNOLOGÍA -->
+    <section id="tecnologia">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Servicios — Área de Tecnología</h2>
+                    <p class="section-sub">Construimos sistemas y automatizaciones pensadas para transporte: control,
+                        consulta y atención.</p>
+                </div>
+                <div class="badge">💻 Tecnología</div>
+            </div>
 
-      function cleanup() {
-        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
-        if (script.parentNode) script.parentNode.removeChild(script);
-      }
+            <div class="grid">
+                <article class="card">
+                    <div class="icon">⚙️</div>
+                    <h3>Desarrollo de Sistemas y Automatizaciones</h3>
+                    <p>Automatización de procesos (registro, validación, reportes) para reducir tiempos y errores
+                        operativos.</p>
+                </article>
 
-      document.body.appendChild(script);
+                <article class="card">
+                    <div class="icon">🌐</div>
+                    <h3>Web Apps</h3>
+                    <p>Plataformas web para consultas y administración: reportes, paneles, validaciones y trazabilidad.
+                    </p>
+                </article>
 
-      setTimeout(() => {
-        if (done) return;
-        done = true;
-        reject(new Error("Timeout (no respondió el callback)"));
-        cleanup();
-      }, 15000);
-    });
-  }
+                <article class="card">
+                    <div class="icon">📱</div>
+                    <h3>Apps móviles</h3>
+                    <p>Apps para fiscalización y consulta ciudadana, operación en campo, escaneo QR y evidencia.</p>
+                </article>
 
-  async function consultar(){
-    const placa = normalizePlaca($placa.value.trim());
+                <article class="card">
+                    <div class="icon">🤖</div>
+                    <h3>Bots para atención</h3>
+                    <p>Bots para WhatsApp o web: consultas automáticas, estados, requisitos y derivación a un asesor.
+                    </p>
+                </article>
 
-    if(!placa){
-      $status.textContent = "Ingresa una placa.";
-      $result.style.display = "none";
-      return;
-    }
+                <article class="card">
+                    <div class="icon">📊</div>
+                    <h3>Dashboards & Analítica</h3>
+                    <p>Indicadores claros para decisiones: operación, demanda, incidencias y seguimiento de gestión.</p>
+                </article>
 
-    $status.textContent = "Consultando...";
-    $result.style.display = "none";
+                <article class="card">
+                    <div class="icon">🔒</div>
+                    <h3>Seguridad y control de acceso</h3>
+                    <p>Roles, auditoría y trazabilidad para procesos sensibles (fiscalización, cambios de estado,
+                        permisos).</p>
+                </article>
+            </div>
+        </div>
+    </section>
 
-    try {
-      const url = `${API_URL}?placa=${encodeURIComponent(placa)}`; 
-      const json = await jsonp(url);
+    <!-- MÉTODO -->
+    <section id="metodo">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Cómo trabajamos</h2>
+                    <p class="section-sub">Proceso simple, entregables claros y acompañamiento durante la
+                        implementación.</p>
+                </div>
+                <div class="badge">✅ Metodología</div>
+            </div>
 
-      if(!json.ok){
-        $status.textContent = "Error: " + (json.error || "desconocido");
-        return;
-      }
-      if(!json.found){
-        $status.textContent = `No se encontró la placa ${placa}`;
-        return;
-      }
+            <div class="steps">
+                <div class="step">
+                    <div class="num">1</div>
+                    <h4>Diagnóstico</h4>
+                    <p>Entendemos el problema técnico/operativo y definimos objetivos, alcance y restricciones.</p>
+                </div>
+                <div class="step">
+                    <div class="num">2</div>
+                    <h4>Propuesta</h4>
+                    <p>Planteamos la solución (estudio o sistema), cronograma, entregables y responsables.</p>
+                </div>
+                <div class="step">
+                    <div class="num">3</div>
+                    <h4>Implementación y soporte</h4>
+                    <p>Ejecutamos, validamos y acompañamos la adopción con soporte y mejora continua.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      $status.textContent = "Encontrado ✅";
-      paint(json);
-      $result.style.display = "block";
+    <!-- DIFERENCIALES + MINI CASOS -->
+    <section id="valor">
+        <div class="container">
+            <div class="split">
+                <div class="panel">
+                    <h2 class="section-title" style="margin:0;">¿Por qué elegir Consultora Pepito?</h2>
+                    <p class="section-sub" style="margin-bottom:10px;">
+                        Diferenciamos con enfoque real en transporte y tecnología aplicada (no soluciones genéricas).
+                    </p>
+                    <ul style="margin:0; padding-left:18px; color:var(--muted); font-size:13.5px;">
+                        <li><b>Especialización en transporte</b>: hablamos el mismo idioma técnico.</li>
+                        <li><b>Ingeniería + software</b>: del diagnóstico al sistema funcionando.</li>
+                        <li><b>Entregables claros</b>: documentos, reportes, dashboards, apps o bots.</li>
+                        <li><b>Implementación realista</b>: pensado para operación y fiscalización.</li>
+                    </ul>
+                </div>
 
-    } catch (err) {
-      $status.textContent = "JSONP falló: " + err.message;
-      console.error("JSONP error:", err);
-    }
-  }
+                <div class="panel">
+                    <h2 class="section-title" style="margin:0;">Mini-casos (ejemplos)</h2>
+                    <p class="section-sub" style="margin-bottom:10px;">
+                        Puedes reemplazar esto por tus casos reales cuando los tengas.
+                    </p>
 
-  $btn.addEventListener("click", consultar);
-  $placa.addEventListener("keydown", (e)=>{ if(e.key==="Enter") consultar(); });
-</script>
+                    <div style="display:grid; gap:10px;">
+                        <div
+                            style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18); border-radius:16px; padding:12px;">
+                            <b>Consulta vehicular + QR</b>
+                            <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+                                Validación rápida de estado y datos clave desde web/app.
+                            </div>
+                        </div>
+                        <div
+                            style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18); border-radius:16px; padding:12px;">
+                            <b>Automatización de reportes</b>
+                            <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+                                Reducción de trabajo manual con generación automática de reportes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Preguntas frecuentes</h2>
+                    <p class="section-sub">Respuestas rápidas para cerrar dudas y acelerar la decisión.</p>
+                </div>
+                <div class="badge">❓ FAQ</div>
+            </div>
+
+            <details>
+                <summary>¿Trabajan con municipalidades y empresas privadas?</summary>
+                <p>Sí. Adaptamos el enfoque y los entregables según el tipo de cliente, normativa y realidad operativa.
+                </p>
+            </details>
+
+            <details>
+                <summary>¿Pueden hacer el estudio y también el sistema?</summary>
+                <p>Sí. Ese es nuestro enfoque: ingeniería de transporte + tecnología aplicada para implementar de
+                    verdad.</p>
+            </details>
+
+            <details>
+                <summary>¿En cuánto tiempo entregan?</summary>
+                <p>Depende del alcance. Tras el diagnóstico, entregamos un cronograma con hitos y entregables por etapa.
+                </p>
+            </details>
+
+            <details>
+                <summary>¿Pueden integrar QR, consultas y bots?</summary>
+                <p>Sí. Implementamos web apps/apps y bots para atención/consulta, con roles y trazabilidad si se
+                    requiere.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Contacto</h2>
+                    <p class="section-sub">Cuéntanos tu necesidad y te respondemos con una propuesta clara.</p>
+                </div>
+                <div class="badge">📩 Contacto</div>
+            </div>
+
+            <div class="split">
+                <div class="panel">
+                    <h3 style="margin:0 0 6px;">Agenda una asesoría</h3>
+                    <p style="margin:0; color:var(--muted); font-size:13.5px;">
+                        Escríbenos por WhatsApp o deja tus datos.
+                    </p>
+
+                    <form id="contact-form">
+                        <div class="field">
+                            <label for="nombre">Nombre</label>
+                            <input id="nombre" name="nombre" placeholder="Tu nombre" required />
+                        </div>
+                        <div class="field">
+                            <label for="empresa">Empresa / Entidad</label>
+                            <input id="empresa" name="empresa"
+                                placeholder="Ej. Municipalidad / Operador / Consultora" />
+                        </div>
+                        <div class="field">
+                            <label for="correo">Correo</label>
+                            <input id="correo" name="correo" type="email" placeholder="correo@dominio.com" required />
+                        </div>
+                        <div class="field">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje"
+                                placeholder="¿Qué necesitas? (impacto vial, planeamiento, sistema, app, bot…)"
+                                required></textarea>
+                        </div>
+
+                        <button class="btn btn-primary" type="submit">Enviar (abre WhatsApp)</button>
+                        <div class="note"></div>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h3 style="margin:0 0 6px;">Canales</h3>
+                    <p style="margin:0; color:var(--muted); font-size:13.5px;">
+                        Completa estos datos para que se vea profesional:
+                    </p>
+
+                    <div style="display:grid; gap:10px; margin-top:12px;">
+                        <div
+                            style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18); border-radius:16px; padding:12px;">
+                            <b>WhatsApp</b>
+                            <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+                                <span id="wa-label"></span>
+                            </div>
+                        </div>
+                        <div
+                            style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18); border-radius:16px; padding:12px;">
+                            <b>Correo</b>
+                            <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+                                <span id="mail-label"></span>
+                            </div>
+                        </div>
+                        <div
+                            style="border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18); border-radius:16px; padding:12px;">
+                            <b>Ubicación</b>
+                            <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+                                Perú (remoto / presencial a coordinar)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <a class="btn" id="btn-mail" href="#">✉️ Enviar correo</a>
+                        <a class="btn" id="btn-whatsapp" href="#" target="_blank" rel="noopener">💬 Ir a WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div>© <span id="year"></span> Consultora Pepito — Transporte & Tecnología</div>
+            <div style="opacity:.9;"></div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp floating button -->
+    <a class="wa-float" id="wa-float" href="#" target="_blank" rel="noopener">
+        💬 <span>WhatsApp</span>
+    </a>
+
+    <script>
+        // ====== CONFIGURA AQUÍ ======
+        const WHATSAPP_NUMBER = "51904505218"; // <-- Cambia: 51 + tu número (sin +, sin espacios)
+        const EMAIL_TO = "chonguitos@geishas.com"; // <-- Cambia correo
+
+        const waLink = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+
+        // UI labels
+        document.getElementById("year").textContent = new Date().getFullYear();
+        document.getElementById("wa-label").textContent = `+${WHATSAPP_NUMBER}`;
+        document.getElementById("mail-label").textContent = EMAIL_TO;
+
+        // Buttons
+        const baseMsg = "Hola, quiero una asesoría con Consultora Pepito. ";
+        document.getElementById("btn-whatsapp").href = waLink(baseMsg);
+        document.getElementById("btn-whatsapp-top").href = waLink(baseMsg);
+        document.getElementById("wa-float").href = waLink(baseMsg);
+
+        document.getElementById("btn-mail").href = `mailto:${EMAIL_TO}?subject=${encodeURIComponent("Consulta de servicios")}&body=${encodeURIComponent("Hola, quisiera cotizar/consultar:")}`;
+
+        // Form -> opens WhatsApp with prefilled message
+        document.getElementById("contact-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById("nombre").value.trim();
+            const empresa = document.getElementById("empresa").value.trim();
+            const correo = document.getElementById("correo").value.trim();
+            const mensaje = document.getElementById("mensaje").value.trim();
+
+            const full = [
+                "Hola, quiero una asesoría con Consultora Pepito.",
+                "",
+                `Nombre: ${nombre}`,
+                empresa ? `Empresa/Entidad: ${empresa}` : null,
+                `Correo: ${correo}`,
+                "",
+                `Mensaje: ${mensaje}`
+            ].filter(Boolean).join("\n");
+
+            window.open(waLink(full), "_blank");
+        });
+    </script>
 </body>
+
 </html>
